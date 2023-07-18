@@ -7,16 +7,20 @@ import { Server } from "socket.io";
 const app = express();
 const server = http.createServer(app);
 
+const SOCKET_PORT = parseInt(process.env.SOCKET_PORT!); // socket.io requires argument to be a number
+
 const io = new Server(server, {
   cors: {
     origin: process.env.REACT_APP_URL,
   },
 });
 
-const SOCKET_PORT = parseInt(process.env.SOCKET_PORT!); // socket.io requires argument to be a number
-
 io.on("connection", (socket) => {
   console.log("you are connected");
+  socket.on("message", (message) => {
+    console.log(`Your message has been received: ${message.message}`);
+    io.emit("message", message);
+  });
 });
 
 server.listen(SOCKET_PORT, () => {
