@@ -16,10 +16,13 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("you are connected");
   socket.on("message", (message) => {
-    console.log(`Your message has been received: ${message.message}`);
-    io.emit("message", message);
+    io.to(message.room).emit("message", message);
+  });
+
+  socket.on("join", (message) => {
+    socket.join(message.room);
+    io.to(message.room).emit("join", message);
   });
 });
 

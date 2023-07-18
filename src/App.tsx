@@ -1,9 +1,10 @@
-import Chat from './Components/Chat';
+// import Chat from './Components/Chat';
+import ChatApp from './Components/ChatApp';
 
 function App() {
   return (
     <div>
-      <Chat />
+      <ChatApp />
     </div>
   );
 }
