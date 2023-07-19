@@ -1,16 +1,13 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import ChatLogin from './ChatLogin';
+import Chat from './Chat';
 import { socket } from '../socket';
 
-interface MessageProps {
+export interface MessageProps {
+  type: 'join' | 'message';
+  username: string;
+  room: string;
   message: string;
-  username: string;
-  room: string;
-}
-
-interface JoinProps {
-  room: string;
-  username: string;
 }
 
 function ChatApp() {
@@ -23,9 +20,11 @@ function ChatApp() {
   useEffect(() => {
     function onConnect() {
       setConnected(true);
-      const formattedJoin: JoinProps = {
+      const formattedJoin: MessageProps = {
+        type: 'join',
         room,
         username,
+        message: `${username} joined room.`
       }
 
       socket.emit('join', formattedJoin);
@@ -37,7 +36,7 @@ function ChatApp() {
       setRoom('');
     }
 
-    function onJoin(message: JoinProps) {
+    function onJoin(message: MessageProps) {
       alert(`${message.username} joined the room`);
     }
 
@@ -81,6 +80,7 @@ function ChatApp() {
     e.preventDefault();
 
     const formattedMessage: MessageProps = {
+      type: 'message',
       room,
       username,
       message,
@@ -94,18 +94,13 @@ function ChatApp() {
   return (
     <div>
       {connected ? (
-        <div>
-          <div>
-            <h3>Room: {room}</h3>
-            {messages.map((message, index) => (
-              <p key={index}>{message.username}: {message.message}.</p>
-            ))}
-          </div>
-          <form onSubmit={sendMessage}>
-            <input value={message} onChange={updateMessage} placeholder="Write a message" />
-            <button>Send</button>
-          </form>
-        </div>
+        <Chat 
+          messages={messages}
+          message={message}
+          room={room}
+          onSubmit={sendMessage}
+          onChange={updateMessage}
+        />
       ) : (
         <ChatLogin 
           connectSocket={connectSocket}
