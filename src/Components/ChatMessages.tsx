@@ -9,6 +9,7 @@ function ChatMessages({ messages, username }: ChatMessagesProps) {
 
   return (
     <div>
+      <h3>Chat</h3>
       {messages.map((message, index) => {
         if (message.type === 'message') {
           return <p key={index}>{message.username}: {message.message}</p>

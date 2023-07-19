@@ -32,7 +32,7 @@ function Chat({ socket, room, username }: ChatProps) {
   return (
     <div>
       <div>
-        <h3>Room: {room}</h3>
+        <h3>Current Room: {room}</h3>
       </div>
       <form onSubmit={sendMessage}>
         <input value={message} onChange={updateMessage} placeholder="Write a message" />
