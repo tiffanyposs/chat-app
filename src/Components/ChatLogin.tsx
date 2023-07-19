@@ -1,12 +1,13 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { Socket } from 'socket.io-client';
-import { MessageProps } from './ChatApp';
+import { MessageProps, ConnectProps } from './ChatApp';
 
 interface ChatLoginProps {
   socket: Socket;
+  onConnect: (data: ConnectProps) => void;
 }
 
-function ChatLogin({ socket }: ChatLoginProps) {
+function ChatLogin({ socket, onConnect }: ChatLoginProps) {
   const [ room, setRoom ] = useState<string>('');
   const [ username, setUsername ] = useState<string>('');
 
@@ -23,17 +24,10 @@ function ChatLogin({ socket }: ChatLoginProps) {
     if (room && username){ 
       socket.connect();
 
-      // setConnected(true);
-
-      console.log('here');
-      const formattedJoin: MessageProps = {
-        type: 'join',
-        room,
+      onConnect({
         username,
-        message: `${username} joined room.`
-      }
-
-      socket.emit('message', formattedJoin);
+        room,
+      })
     }
   }
   

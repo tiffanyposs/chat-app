@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react';
 import ChatLogin from './ChatLogin';
 import Chat from './Chat';
 import ChatDisconnect from './ChatDisconnect';
+import ChatMessages from './ChatMessages';
 import { socket } from '../socket';
 
+export interface ConnectProps {
+  username: string;
+  room: string;
+}
 export interface MessageProps {
   type: 'join' | 'message' | 'leave';
   username: string;
@@ -18,56 +23,54 @@ function ChatApp() {
   const [ messages, setMessages ] = useState<MessageProps[]>([]);
 
   useEffect(() => {
-    function onConnect() {
-      setConnected(true);
-    }
-
     function onMessage(message: MessageProps) {
-      if (message.type === 'join') {
-        console.log('join');
-        setRoom(message.room)
-        setUsername(message.username);
-      }
-
       setMessages(arr => [...arr, message])
     }
 
-    function onDisconnect() {
-      setConnected(false);
-      setUsername('');
-      setRoom('');
-    }
-
-    socket.on('connect', onConnect)
     socket.on('message', onMessage);
-    socket.on('disconnect', onDisconnect)
 
     return () => {
       socket.disconnect();
-      socket.off('connect', onConnect);
       socket.off('message', onMessage);
-      socket.off('disconnect', onDisconnect)
     };
   }, []);
+
+  function onConnect({ username, room }: ConnectProps) {
+    setConnected(true);
+    setRoom(room)
+    setUsername(username);
+
+    socket.emit('message', {
+      type: 'join',
+      username,
+      room,
+      message: `${username} joined the chat.`
+    })
+  }
+
+  function onDisconnect() {
+    setConnected(false);
+    setUsername('');
+    setRoom('');
+  }
 
   return (
     <div>
       {connected ? (
         <div>
-          <div>
-            {messages.map((message, index) => (
-              <p key={index}>{message.username}: {message.message}</p>
-            ))}
-          </div>
+          <ChatMessages 
+            messages={messages}
+            username={username}
+          />
           <Chat
             socket={socket}
             room={room}
             username={username}
           />
-          <ChatDisconnect socket={socket} />
+          <ChatDisconnect socket={socket} onDisconnect={onDisconnect}/>
         </div>
       ) : (
-        <ChatLogin socket={socket} />
+        <ChatLogin socket={socket} onConnect={onConnect} />
       )}
     </div>
   )

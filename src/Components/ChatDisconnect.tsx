@@ -2,14 +2,13 @@ import { Socket } from "socket.io-client";
 
 interface ChatDisconnectProps {
   socket: Socket;
+  onDisconnect: () => void;
 }
 
-function ChatDisconnect({ socket }: ChatDisconnectProps) {
+function ChatDisconnect({ socket, onDisconnect }: ChatDisconnectProps) {
   const disconnectSocket = (): void => {
     socket.disconnect();
-    // setConnected(false);
-    // setUsername('');
-    // setRoom('');
+    onDisconnect();
   }
 
   return (

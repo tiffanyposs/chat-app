@@ -22,13 +22,11 @@ io.on("connection", (socket) => {
       socket.data.username = message.username;
       socket.data.room = message.room;
     }
-
     io.to(message.room).emit("message", message);
   });
 
   socket.on("disconnect", (reason) => {
     const { room, username } = socket.data;
-
     io.to(room).emit("message", {
       type: "leave",
       room,
