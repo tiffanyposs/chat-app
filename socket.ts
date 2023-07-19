@@ -16,20 +16,19 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  let room: string;
-  let username: string;
-
   socket.on("message", (message) => {
     if (message.type === "join") {
       socket.join(message.room);
-      room = message.room;
-      username = message.username;
+      socket.data.username = message.username;
+      socket.data.room = message.room;
     }
 
     io.to(message.room).emit("message", message);
   });
 
   socket.on("disconnect", (reason) => {
+    const { room, username } = socket.data;
+
     io.to(room).emit("message", {
       type: "leave",
       room,

@@ -1,15 +1,42 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
-
+import { Socket } from 'socket.io-client';
+import { MessageProps } from './ChatApp';
 
 interface ChatLoginProps {
-  connectSocket: (data: FormEvent) => void;
-  room: string;
-  updateRoom: (event: ChangeEvent<HTMLInputElement>) => void;
-  username: string;
-  updateUsername: (event: ChangeEvent<HTMLInputElement>) => void;
+  socket: Socket;
 }
 
-function ChatLogin({ connectSocket, updateRoom, room, updateUsername, username }: ChatLoginProps) {
+function ChatLogin({ socket }: ChatLoginProps) {
+  const [ room, setRoom ] = useState<string>('');
+  const [ username, setUsername ] = useState<string>('');
+
+  const updateRoom = (e: ChangeEvent<HTMLInputElement>): void => {
+    setRoom(e.currentTarget.value || '');
+  };
+
+  const updateUsername = (e: ChangeEvent<HTMLInputElement>): void => {
+    setUsername(e.currentTarget.value || '');
+  };
+
+  const connectSocket = (e: FormEvent): void => {
+    e.preventDefault();
+    if (room && username){ 
+      socket.connect();
+
+      // setConnected(true);
+
+      console.log('here');
+      const formattedJoin: MessageProps = {
+        type: 'join',
+        room,
+        username,
+        message: `${username} joined room.`
+      }
+
+      socket.emit('message', formattedJoin);
+    }
+  }
+  
   return (
     <div>
       <p>Room: {room}</p>

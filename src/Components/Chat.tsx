@@ -1,25 +1,41 @@
-import { ChangeEvent, FormEvent } from 'react';
+import { Socket } from 'socket.io-client';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { MessageProps } from './ChatApp';
 
 interface ChatProps {
-  messages: MessageProps[];
+  socket: Socket;
   room: string;
-  message: string;
-  onSubmit: (event: FormEvent) => void;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  username: string;
 }
 
-function Chat({ messages, message, room, onSubmit, onChange }: ChatProps) {
+function Chat({ socket, room, username }: ChatProps) {
+  const [ message, setMessage ] = useState<string>('');
+
+  const updateMessage = (e: ChangeEvent<HTMLInputElement>): void => {
+    setMessage(e.currentTarget.value || '');
+  }
+
+  const sendMessage = (e: FormEvent): void => {
+    e.preventDefault();
+    const formattedMessage: MessageProps = {
+      type: 'message',
+      room,
+      username,
+      message,
+    }
+
+    socket.emit('message', formattedMessage);
+
+    setMessage('');
+  }
+
   return (
     <div>
       <div>
         <h3>Room: {room}</h3>
-        {messages.map((message, index) => (
-          <p key={index}>{message.username}: {message.message}.</p>
-        ))}
       </div>
-      <form onSubmit={onSubmit}>
-        <input value={message} onChange={onChange} placeholder="Write a message" />
+      <form onSubmit={sendMessage}>
+        <input value={message} onChange={updateMessage} placeholder="Write a message" />
         <button>Send</button>
       </form>
     </div>
