@@ -4,7 +4,7 @@ import Chat from './Chat';
 import { socket } from '../socket';
 
 export interface MessageProps {
-  type: 'join' | 'message';
+  type: 'join' | 'message' | 'leave';
   username: string;
   room: string;
   message: string;
@@ -18,43 +18,14 @@ function ChatApp() {
   const [ messages, setMessages ] = useState<MessageProps[]>([]);
 
   useEffect(() => {
-    function onConnect() {
-      setConnected(true);
-      const formattedJoin: MessageProps = {
-        type: 'join',
-        room,
-        username,
-        message: `${username} joined room.`
-      }
-
-      socket.emit('join', formattedJoin);
-    }
-
-    function onDisconnect() {
-      setConnected(false);
-      setUsername('');
-      setRoom('');
-    }
-
-    function onJoin(message: MessageProps) {
-      alert(`${message.username} joined the room`);
-    }
-
     function onMessage(message: MessageProps) {
       setMessages(arr => [...arr, message])
     }
 
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('join', onJoin);
     socket.on('message', onMessage)
 
     return () => {
       socket.disconnect();
-
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('join', onJoin);
       socket.off('message', onMessage);
     };
   }, [room, username]);
@@ -69,7 +40,27 @@ function ChatApp() {
 
   const connectSocket = (e: FormEvent): void => {
     e.preventDefault();
-    if (room && username) socket.connect();
+    if (room && username){ 
+      socket.connect();
+
+      setConnected(true);
+
+      const formattedJoin: MessageProps = {
+        type: 'join',
+        room,
+        username,
+        message: `${username} joined room.`
+      }
+
+      socket.emit('message', formattedJoin);
+    }
+  }
+
+  const disconnectSocket = (): void => {
+    socket.disconnect();
+    setConnected(false);
+    setUsername('');
+    setRoom('');
   }
 
   const updateMessage = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -94,13 +85,16 @@ function ChatApp() {
   return (
     <div>
       {connected ? (
-        <Chat 
-          messages={messages}
-          message={message}
-          room={room}
-          onSubmit={sendMessage}
-          onChange={updateMessage}
-        />
+        <div>
+          <Chat 
+            messages={messages}
+            message={message}
+            room={room}
+            onSubmit={sendMessage}
+            onChange={updateMessage}
+          />
+          <button onClick={disconnectSocket}>Disconnect</button>
+        </div>
       ) : (
         <ChatLogin 
           connectSocket={connectSocket}

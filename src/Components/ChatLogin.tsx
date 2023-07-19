@@ -12,7 +12,6 @@ interface ChatLoginProps {
 function ChatLogin({ connectSocket, updateRoom, room, updateUsername, username }: ChatLoginProps) {
   return (
     <div>
-      <p>This is a form</p>
       <p>Room: {room}</p>
       <p>Username: {username}</p>
       <form onSubmit={connectSocket}>
