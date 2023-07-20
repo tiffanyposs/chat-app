@@ -4,6 +4,7 @@ import Chat from './Chat';
 import ChatDisconnect from './ChatDisconnect';
 import ChatMessages from './ChatMessages';
 import ChatRooms from './ChatRooms';
+import ChatRoomUsers from './ChatRoomUsers';
 import { socket } from '../socket';
 export interface MessageProps {
   type: 'join' | 'message' | 'leave';
@@ -21,7 +22,6 @@ function ChatApp() {
   const [ username, setUsername ] = useState<string>('');
   const [ joinedRoom, setJoinedRoom ] = useState<boolean>(false);
   const [ messages, setMessages ] = useState<MessageProps[]>([]);
-  // const [ rooms, setRooms ] = useState<RoomProps>({});
 
   useEffect(() => {
     function onMessage(message: MessageProps) {
@@ -66,6 +66,7 @@ function ChatApp() {
             messages={messages}
             username={username}
           />
+          <ChatRoomUsers socket={socket} />
           <Chat
             socket={socket}
             room={room}

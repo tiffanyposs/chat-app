@@ -15,8 +15,13 @@ const io = new Server(server, {
   },
 });
 
+interface ConnectionData {
+  socketId: string;
+  username: string;
+}
+
 const users: { [key: string]: string } = {};
-const rooms: { [key: string]: string[] } = {};
+const rooms: { [key: string]: ConnectionData[] } = {};
 
 const handleJoin = (message: any, socket: Socket) => {
   socket.join(message.room);
@@ -25,13 +30,19 @@ const handleJoin = (message: any, socket: Socket) => {
 
   users[socket.id] = message.username;
 
+  const connectionData: ConnectionData = {
+    socketId: socket.id,
+    username: message.username,
+  };
+
   if (rooms[message.room]) {
-    rooms[message.room].push(socket.id);
+    rooms[message.room].push(connectionData);
   } else {
-    rooms[message.room] = [socket.id];
+    rooms[message.room] = [connectionData];
   }
 
-  io.emit("roomUpdate", rooms);
+  io.emit("roomUpdate", rooms); // all users get room update
+  io.to(message.room).emit("userUpdate", rooms[message.room]);
 };
 
 const handleMessage = (message: any, socket: Socket) => {
@@ -43,8 +54,10 @@ const handleDisconnect = (socket: Socket) => {
   const { room, username } = socket.data;
 
   if (rooms[room]?.length > 1) {
-    rooms[room] = rooms[room].filter((userId) => userId !== socket.id);
-    // check if room is empty
+    rooms[room] = rooms[room].filter(
+      (connection) => connection.socketId !== socket.id
+    );
+
     io.to(room).emit("message", {
       type: "leave",
       room,
@@ -55,7 +68,8 @@ const handleDisconnect = (socket: Socket) => {
     delete rooms[room];
   }
 
-  io.emit("roomUpdate", rooms);
+  io.emit("roomUpdate", rooms); // all users get room update
+  io.to(room).emit("userUpdate", rooms[room]); // room users get room user updates
 };
 
 io.on("connection", (socket) => {
