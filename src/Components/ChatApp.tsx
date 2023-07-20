@@ -3,12 +3,8 @@ import ChatLogin from './ChatLogin';
 import Chat from './Chat';
 import ChatDisconnect from './ChatDisconnect';
 import ChatMessages from './ChatMessages';
+import ChatRooms from './ChatRooms';
 import { socket } from '../socket';
-
-export interface ConnectProps {
-  username: string;
-  room: string;
-}
 export interface MessageProps {
   type: 'join' | 'message' | 'leave';
   username: string;
@@ -23,33 +19,25 @@ export interface RoomProps {
 function ChatApp() {
   const [ room, setRoom ] = useState<string>('');
   const [ username, setUsername ] = useState<string>('');
-  const [ connected, setConnected ] = useState<boolean>(false);
+  const [ joinedRoom, setJoinedRoom ] = useState<boolean>(false);
   const [ messages, setMessages ] = useState<MessageProps[]>([]);
-  const [ rooms, setRooms ] = useState<RoomProps>({});
+  // const [ rooms, setRooms ] = useState<RoomProps>({});
 
   useEffect(() => {
     function onMessage(message: MessageProps) {
       setMessages(arr => [...arr, message])
     }
 
-    function onRoomUpdate(data: RoomProps) {
-      setRooms(data);
-    }
-
     socket.on('message', onMessage);
-    socket.on('roomUpdate', onRoomUpdate);
 
     return () => {
       socket.disconnect();
       socket.off('message', onMessage);
-      socket.off('roomUpdate', onRoomUpdate)
     };
   }, []);
 
-  function onConnect({ username, room }: ConnectProps) {
-    setConnected(true);
-    setRoom(room)
-    setUsername(username);
+  function onRoomJoin() {
+    setJoinedRoom(true);
 
     socket.emit('message', {
       type: 'join',
@@ -60,21 +48,20 @@ function ChatApp() {
   }
 
   function onDisconnect() {
-    setConnected(false);
+    setJoinedRoom(false);
     setUsername('');
     setRoom('');
+    setMessages([]);
+  }
+
+  function selectRoom(selectedRoom: string) {
+    setRoom(selectedRoom)
   }
 
   return (
     <div>
-      {connected ? (
+      {joinedRoom ? (
         <div>
-          <div>
-            <h3>Open Rooms</h3>
-            {!!Object.keys(rooms).length && Object.keys(rooms).map(room => (
-              <p>{room} - {rooms[room].length}</p>
-            ))}
-          </div>
           <ChatMessages 
             messages={messages}
             username={username}
@@ -87,7 +74,17 @@ function ChatApp() {
           <ChatDisconnect socket={socket} onDisconnect={onDisconnect}/>
         </div>
       ) : (
-        <ChatLogin socket={socket} onConnect={onConnect} />
+        <div>
+          <ChatRooms socket={socket} selectRoom={selectRoom} />
+          <ChatLogin 
+            socket={socket} 
+            room={room} 
+            setRoom={setRoom} 
+            username={username}
+            setUsername={setUsername}
+            onRoomJoin={onRoomJoin} 
+          />
+        </div>
       )}
     </div>
   )

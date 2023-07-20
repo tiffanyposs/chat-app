@@ -1,15 +1,19 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useEffect, ChangeEvent, FormEvent } from 'react';
 import { Socket } from 'socket.io-client';
-import { MessageProps, ConnectProps } from './ChatApp';
 
 interface ChatLoginProps {
   socket: Socket;
-  onConnect: (data: ConnectProps) => void;
+  room: string;
+  setRoom: (room: string) => void;
+  username: string;
+  setUsername: (username: string) => void;
+  onRoomJoin: () => void;
 }
 
-function ChatLogin({ socket, onConnect }: ChatLoginProps) {
-  const [ room, setRoom ] = useState<string>('');
-  const [ username, setUsername ] = useState<string>('');
+function ChatLogin({ socket, onRoomJoin, room, setRoom, username, setUsername }: ChatLoginProps) {
+  useEffect(() => {
+    socket.connect(); // connect socket on load
+  }, []);
 
   const updateRoom = (e: ChangeEvent<HTMLInputElement>): void => {
     setRoom(e.currentTarget.value || '');
@@ -21,14 +25,8 @@ function ChatLogin({ socket, onConnect }: ChatLoginProps) {
 
   const connectSocket = (e: FormEvent): void => {
     e.preventDefault();
-    if (room && username){ 
-      socket.connect();
 
-      onConnect({
-        username,
-        room,
-      })
-    }
+    if (room && username) onRoomJoin();
   }
   
   return (

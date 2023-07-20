@@ -61,6 +61,7 @@ const handleDisconnect = (socket: Socket) => {
 io.on("connection", (socket) => {
   socket.on("message", (message) => handleMessage(message, socket));
   socket.on("disconnect", (reason) => handleDisconnect(socket));
+  io.emit("roomUpdate", rooms);
 });
 
 server.listen(SOCKET_PORT, () => {
