@@ -1,19 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { colors } from './constants';
-import styled from '@emotion/styled';
-
-const List = styled.ul({
-  backgroundColor: colors.yellow,
-  flexGrow: '1',
-  border: `1px solid ${colors.black}`,
-  overflow: 'scroll',
-});
-
-const ListItem = styled.li({
-  padding: '15px 5px',
-  borderBottom: `1px solid ${colors.black}`
-})
+import SideBar from './SideBar/SideBar';
+import { SideBarList, SideBarListItem } from './SideBar/styled';
 
 interface ChatRoomsProps {
   socket: Socket;
@@ -38,29 +26,20 @@ function ChatRooms({ socket, selectRoom }: ChatRoomsProps) {
   const roomList = Object.keys(rooms);
 
   return (
-    <div style={{ 
-      padding: '20px', 
-      borderLeft: `1px solid ${colors.black}`, 
-      height: '100%',
-      overflow: 'hidden',
-      minWidth: '200px',
-      maxWidth: '300px',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <SideBar>
       <h3>Open Rooms</h3>
-      <List>
+      <SideBarList>
         {!!roomList.length ? (
           roomList.map(room => (
-            <ListItem key={room} onClick={() => selectRoom(room)}>
+            <SideBarListItem style={{ cursor: 'pointer' }} key={room} onClick={() => selectRoom(room)}>
               {room} - {rooms[room].length}
-            </ListItem>
+            </SideBarListItem>
           ))
         ) : (
-          <ListItem>There are 0 rooms open.</ListItem>
+          <SideBarListItem>There are 0 rooms open.</SideBarListItem>
         )}
-      </List>
-    </div>
+      </SideBarList>
+    </SideBar>
   )
 }
 

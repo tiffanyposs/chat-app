@@ -5,7 +5,9 @@ import ChatDisconnect from './ChatDisconnect';
 import ChatMessages from './ChatMessages';
 import ChatRooms from './ChatRooms';
 import ChatRoomUsers from './ChatRoomUsers';
+import { colors } from './constants';
 import { socket } from '../socket';
+import MainLayout from './MainLayout';
 export interface MessageProps {
   type: 'join' | 'message' | 'leave';
   username: string;
@@ -60,41 +62,59 @@ function ChatApp() {
 
   return (
     <div style={{ height: '90vh'}}>
-      {joinedRoom ? (
-        <div style={{ display: 'flex' }}>    
-          <div style={{ position: 'relative', backgroundColor: 'red' }}>
-            <ChatDisconnect 
+      <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'stretch', 
+          height: '100%' 
+        }}
+      >
+        {joinedRoom ? (
+          <>    
+            <MainLayout>
+              <div style={{ 
+                position: 'relative', 
+                width: '100%', 
+                height: '100%' ,
+                padding: '20px',
+                backgroundColor: colors.pink
+              }}>
+                <ChatDisconnect 
+                  socket={socket} 
+                  onDisconnect={onDisconnect}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                  <ChatMessages 
+                    messages={messages}
+                    username={username}
+                  />
+                  <Chat
+                    socket={socket}
+                    room={room}
+                    username={username}
+                  />
+                </div>
+              </div>
+            </MainLayout>
+            <ChatRoomUsers socket={socket} />
+          </>
+        ) : (
+          <>
+            <ChatLogin 
               socket={socket} 
-              onDisconnect={onDisconnect}
-            />
-            <ChatMessages 
-              messages={messages}
+              room={room} 
+              setRoom={setRoom} 
               username={username}
+              setUsername={setUsername}
+              onRoomJoin={onRoomJoin} 
             />
-            <Chat
-              socket={socket}
-              room={room}
-              username={username}
+            <ChatRooms 
+              socket={socket} 
+              selectRoom={selectRoom} 
             />
-          </div>
-          <ChatRoomUsers socket={socket} />
-        </div>
-      ) : (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch', height: '100%' }}>
-          <ChatLogin 
-            socket={socket} 
-            room={room} 
-            setRoom={setRoom} 
-            username={username}
-            setUsername={setUsername}
-            onRoomJoin={onRoomJoin} 
-          />
-          <ChatRooms 
-            socket={socket} 
-            selectRoom={selectRoom} 
-          />
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   )
 }

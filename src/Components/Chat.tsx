@@ -1,6 +1,8 @@
 import { Socket } from 'socket.io-client';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { MessageProps } from './ChatApp';
+import Button from './Button';
+import { colors } from './constants';
 
 interface ChatProps {
   socket: Socket;
@@ -31,12 +33,14 @@ function Chat({ socket, room, username }: ChatProps) {
 
   return (
     <div>
-      <div>
-        <h3>Current Room: {room}</h3>
-      </div>
-      <form onSubmit={sendMessage}>
-        <input value={message} onChange={updateMessage} placeholder="Write a message" />
-        <button>Send</button>
+      <form onSubmit={sendMessage} style={{ flexDirection: 'row' }}>
+        <input 
+          value={message} 
+          onChange={updateMessage} 
+          placeholder="Write a message"
+          style={{ marginRight: '5px' }}
+        />
+        <Button backgroundColor={colors.blue}>Send</Button>
       </form>
     </div>
   )

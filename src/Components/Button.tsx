@@ -20,8 +20,9 @@ function Button({
       color, 
       outline: 'none', 
       border: `1px solid ${colors.black}` ,
-      padding: '5px 10px',
+      padding: '6px 10px',
       fontSize: '1em',
+      cursor: 'pointer',
       ...style
     }}>
       {children}

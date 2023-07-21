@@ -18,7 +18,7 @@ function ChatDisconnect({ socket, onDisconnect }: ChatDisconnectProps) {
     <form onSubmit={disconnectSocket}>
       <Button 
         backgroundColor={colors.yellow} 
-        style={{ position: 'absolute', right: '0' }}
+        style={{ position: 'absolute', right: '20px', top: '20px' }}
       >
           Disconnect
       </Button>

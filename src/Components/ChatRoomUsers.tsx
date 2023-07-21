@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
+import SideBar from './SideBar/SideBar';
+import { SideBarList, SideBarListItem } from './SideBar/styled';
 
 interface ChatRoomUsersProps {
   socket: Socket;
@@ -26,18 +28,18 @@ function ChatRoomUsers({ socket }: ChatRoomUsersProps) {
   }, [socket]);
 
   return (
-    <div>
+    <SideBar>
       <h3>Chat Room Users</h3>
-      <div>
+      <SideBarList>
         {users.length ? (
           users.map(user => (
-            <p key={user.socketId}>{user.username}</p>
+            <SideBarListItem key={user.socketId}>{user.username}</SideBarListItem>
           ))
         ) : (
           <p>Nobody Here</p>
         )}
-      </div>
-    </div>
+      </SideBarList>
+    </SideBar>
   )
 }
 

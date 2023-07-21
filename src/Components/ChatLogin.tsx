@@ -1,5 +1,6 @@
 import { useEffect, ChangeEvent, FormEvent } from 'react';
 import { Socket } from 'socket.io-client';
+import MainLayout from './MainLayout';
 import Button from './Button';
 interface ChatLoginProps {
   socket: Socket;
@@ -30,7 +31,7 @@ function ChatLogin({ socket, onRoomJoin, room, setRoom, username, setUsername }:
   }
   
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: '1' }}>
+    <MainLayout>
       <div style={{ width: '50%', maxWidth: '500px' }}>
         <h3>Login</h3>
         <form onSubmit={connectSocket}>
@@ -41,7 +42,7 @@ function ChatLogin({ socket, onRoomJoin, room, setRoom, username, setUsername }:
           <Button>Connect</Button>
         </form>
       </div>
-    </div>
+    </MainLayout>
   )
 }
 
