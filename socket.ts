@@ -69,7 +69,7 @@ const handleDisconnect = (socket: Socket) => {
   }
 
   io.emit("roomUpdate", rooms); // all users get room update
-  io.to(room).emit("userUpdate", rooms[room]); // room users get room user updates
+  io.to(room).emit("userUpdate", rooms[room]); // room users get room user updatesf
 };
 
 io.on("connection", (socket) => {
