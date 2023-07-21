@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import styled from '@emotion/styled'
+import Circle from './Circle';
 import { css } from '@emotion/react';
 import { colors } from './constants';
 
@@ -8,20 +8,16 @@ const navStyles = css({
   height: '40px', 
   backgroundColor: colors.pink,
   display: 'flex',
-  justifyContent: 'flex-end'
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  padding: '50px 20px',
 });
-
-const Circle = styled.div({
-  width: '30px',
-  height: '30px',
-  border: `1px solid ${colors.black}`,
-  borderRadius: '30px',
-})
 
 function NavBar() {
   return (
     <nav css={navStyles}>
-      <Circle />
+      <Circle size="50px" style={{ backgroundColor: colors.blue }}/>
+      <Circle size="50px" style={{ marginLeft: '-20px', backgroundColor: colors.yellow }}/>
     </nav>
   )
 }
