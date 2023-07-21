@@ -5,12 +5,14 @@ import { colors } from './constants';
 
 const navStyles = css({ 
   width: '100%', 
-  height: '40px', 
+  // height: '40px',
+  height: '10vh',
   backgroundColor: colors.pink,
   display: 'flex',
   justifyContent: 'flex-end',
   alignItems: 'center',
-  padding: '50px 20px',
+  padding: '10px',
+  borderBottom: `1px solid ${colors.black}`
 });
 
 function NavBar() {

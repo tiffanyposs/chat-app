@@ -2,6 +2,7 @@ html {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  font-size: 100%;
 }
 *, *:before, *:after {
   -webkit-box-sizing: inherit;
@@ -13,9 +14,69 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Ubuntu Mono', monospace;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 1.5em;
+}
+
+h2 {
+  font-size: 1.75em;
+  margin-bottom: 1.25em
+}
+
+h3 {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  letter-spacing: 0.05em;
+}
+
+h4 { 
+  font-size: 1.25em;
+  margin-bottom: 0.75em;
+}
+
+h5 {
+  font-size: 1em;
+  margin-bottom: 0.5em;
+}
+
+h6 {
+  font-size: 1em;
+  margin-bottom: 0.5em;
+}
+
+p, label, input {
+  font-size: 1em;
+  margin-bottom: 0.75em;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  align-items: flex-start;
+}
+
+input {
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+
+
+

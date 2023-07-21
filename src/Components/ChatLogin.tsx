@@ -1,6 +1,6 @@
 import { useEffect, ChangeEvent, FormEvent } from 'react';
 import { Socket } from 'socket.io-client';
-
+import Button from './Button';
 interface ChatLoginProps {
   socket: Socket;
   room: string;
@@ -13,7 +13,7 @@ interface ChatLoginProps {
 function ChatLogin({ socket, onRoomJoin, room, setRoom, username, setUsername }: ChatLoginProps) {
   useEffect(() => {
     socket.connect(); // connect socket on load
-  }, []);
+  });
 
   const updateRoom = (e: ChangeEvent<HTMLInputElement>): void => {
     setRoom(e.currentTarget.value || '');
@@ -30,16 +30,17 @@ function ChatLogin({ socket, onRoomJoin, room, setRoom, username, setUsername }:
   }
   
   return (
-    <div>
-      <p>Room: {room}</p>
-      <p>Username: {username}</p>
-      <form onSubmit={connectSocket}>
-        <label>Room Name: </label>
-        <input value={room} onChange={updateRoom} />
-        <label >Username: </label>
-        <input value={username} onChange={updateUsername} />
-        <button>Connect</button>
-      </form>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: '1' }}>
+      <div style={{ width: '50%', maxWidth: '500px' }}>
+        <h3>Login</h3>
+        <form onSubmit={connectSocket}>
+          <label>Room Name: </label>
+          <input value={room} onChange={updateRoom} />
+          <label >Username: </label>
+          <input value={username} onChange={updateUsername} />
+          <Button>Connect</Button>
+        </form>
+      </div>
     </div>
   )
 }

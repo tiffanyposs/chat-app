@@ -59,7 +59,7 @@ function ChatApp() {
   }
 
   return (
-    <div>
+    <div style={{ height: '90vh'}}>
       {joinedRoom ? (
         <div>
           <ChatMessages 
@@ -75,8 +75,7 @@ function ChatApp() {
           <ChatDisconnect socket={socket} onDisconnect={onDisconnect}/>
         </div>
       ) : (
-        <div>
-          <ChatRooms socket={socket} selectRoom={selectRoom} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch', height: '100%' }}>
           <ChatLogin 
             socket={socket} 
             room={room} 
@@ -84,6 +83,10 @@ function ChatApp() {
             username={username}
             setUsername={setUsername}
             onRoomJoin={onRoomJoin} 
+          />
+          <ChatRooms 
+            socket={socket} 
+            selectRoom={selectRoom} 
           />
         </div>
       )}
