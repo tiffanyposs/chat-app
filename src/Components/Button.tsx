@@ -1,14 +1,17 @@
+import { CSSProperties } from "react";
 import { colors } from "./constants";
 
 interface ButtonProps {
   children: string | JSX.Element;
   backgroundColor?: string;
   color?: string;
+  style?: CSSProperties;
 }
 
 function Button({ 
   backgroundColor = colors.pink, 
-  color = colors.black, 
+  color = colors.black,
+  style = {},
   children 
 }: ButtonProps) {
   return (
@@ -19,6 +22,7 @@ function Button({
       border: `1px solid ${colors.black}` ,
       padding: '5px 10px',
       fontSize: '1em',
+      ...style
     }}>
       {children}
     </button>

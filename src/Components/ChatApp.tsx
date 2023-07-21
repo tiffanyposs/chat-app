@@ -61,18 +61,23 @@ function ChatApp() {
   return (
     <div style={{ height: '90vh'}}>
       {joinedRoom ? (
-        <div>
-          <ChatMessages 
-            messages={messages}
-            username={username}
-          />
+        <div style={{ display: 'flex' }}>    
+          <div style={{ position: 'relative', backgroundColor: 'red' }}>
+            <ChatDisconnect 
+              socket={socket} 
+              onDisconnect={onDisconnect}
+            />
+            <ChatMessages 
+              messages={messages}
+              username={username}
+            />
+            <Chat
+              socket={socket}
+              room={room}
+              username={username}
+            />
+          </div>
           <ChatRoomUsers socket={socket} />
-          <Chat
-            socket={socket}
-            room={room}
-            username={username}
-          />
-          <ChatDisconnect socket={socket} onDisconnect={onDisconnect}/>
         </div>
       ) : (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'stretch', height: '100%' }}>

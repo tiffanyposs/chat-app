@@ -3,7 +3,6 @@ import { Socket } from 'socket.io-client';
 import { colors } from './constants';
 import styled from '@emotion/styled';
 
-
 const List = styled.ul({
   backgroundColor: colors.yellow,
   flexGrow: '1',
@@ -34,7 +33,7 @@ function ChatRooms({ socket, selectRoom }: ChatRoomsProps) {
     return () => {
       socket.off('roomUpdate', setRooms)
     };
-  })
+  }, [socket])
 
   const roomList = Object.keys(rooms);
 
